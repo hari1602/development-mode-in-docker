@@ -1,20 +1,52 @@
 version: "3"
 services:
-  first-app:
-    container_name: first-app
+  gateway:
+    container_name: gateway
     build:
       context: .
       args:
-        - APP=first-app
+        - APP=gateway
     restart: always
+    env_file:
+      - apps/gateway/development.env
     ports:
-      - 3000:3000
-  second-app:
-    container_name: second-app
+      - '3000:3000'
+  book:
+    container_name: book
     build:
       context: .
       args:
-        - APP=second-app
+        - APP=book
+    restart: always
+    env_file:
+      - apps/book/development.env
+  order:
+    container_name: order
+    build:
+      context: .
+      args:
+        - APP=order
+    restart: always
+    env_file:
+      - apps/order/development.env
+  redis:
+    image: redis
     restart: always
     ports:
-      - 3001:3000
+      - '6379:6379'
+    command: >
+      --requirepass redis
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=development
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
