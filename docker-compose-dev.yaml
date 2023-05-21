@@ -1,0 +1,52 @@
+version: "3"
+services:
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      target: development
+    command: pnpm run start:dev gateway
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+  book:
+    container_name: book
+    build:
+      context: .
+      target: development
+    command: pnpm run start:dev book
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  order:
+    container_name: order
+    build:
+      context: .
+      target: development
+    command: pnpm run start:dev order
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: >
+      --requirepass redis
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=development
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
