@@ -21,5 +21,5 @@ RUN pnpm install --prod
 COPY --from=development /usr/src/app/dist ./dist
  
 # Add an env to save ARG
-ENV APP_MAIN_FILE=dist/apps/${APP}/apps/${APP}/src/main
+ENV APP_MAIN_FILE=dist/apps/${APP}/main
 CMD node ${APP_MAIN_FILE}
